@@ -7,7 +7,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace Uwizard {
@@ -440,24 +443,39 @@ exsub:      obox.Dispose();
                 duout.Text = "";
                 duout.Visible = true;
             }
+            var isGX2 = false;
             Application.DoEvents();
-            try {
-                duout.Text = "Reading " + System.IO.Path.GetFileName(wudpath) + "\r\n";
-                Application.DoEvents();
-                System.IO.StreamReader sr = new System.IO.StreamReader(wudpath);
-                currentwud_id = sr.ReadLine();
-                sr.Close();
-                sr.Dispose();
-            } catch (Exception ex) {
-                msgbox(uwiz_langtext[8] + "\r\n\r\n" + ex.Message); // "Invalid Wii U disc Image. Perhaps you forgot to unzip the file?\r\n\r\n" + ex.Message
-                goto exsub;
+            var id = "";
+            if (Directory.Exists(wudpath))
+            {
+                id = Regex.Match(wudpath, @"\[([^)]*)\]").Groups[1].Value;
+                isGX2 = true;
             }
-            currentwud = wudpath;
+            else if (File.Exists(wudpath))
+                {
+                    try
+                    {
+                        duout.Text = "Reading " + System.IO.Path.GetFileName(wudpath) + "\r\n";
+                        Application.DoEvents();
+                        System.IO.StreamReader sr = new System.IO.StreamReader(wudpath);
+                        currentwud_id = sr.ReadLine();
+                        sr.Close();
+                        sr.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        msgbox(uwiz_langtext[8] + "\r\n\r\n" + ex.Message);
+                            // "Invalid Wii U disc Image. Perhaps you forgot to unzip the file?\r\n\r\n" + ex.Message
+                        goto exsub;
+                    }
 
-            string id = currentwud_id[6].ToString()+currentwud_id[7].ToString()+currentwud_id[8].ToString()+currentwud_id[9].ToString();
-            /*string tmp = Microsoft.VisualBasic.Interaction.InputBox("Type the game Id. If you are not a dev, then please click cancel. This feature is only for debugging.","Uwizard", id, -1,-1);
+                    id = currentwud_id[6].ToString() + currentwud_id[7].ToString() + currentwud_id[8].ToString() +
+                                currentwud_id[9].ToString();
+                    /*string tmp = Microsoft.VisualBasic.Interaction.InputBox("Type the game Id. If you are not a dev, then please click cancel. This feature is only for debugging.","Uwizard", id, -1,-1);
             if (tmp != "") id = tmp;//*/
+                }
 
+            currentwud = wudpath;
             wud game=new wud();
             bool isnew = false;
 
@@ -472,12 +490,24 @@ exsub:      obox.Dispose();
             }
 
             isnew = true;
-            game.id = System.IO.Path.GetFileNameWithoutExtension(currentwud);
-            if (game.id.Length != 6) {
-                game.id = id + "01";
-            } else {
-                if (game.id.Substring(0, 4) != id) {
+            if (isGX2)
+            {
+                game.id = id;
+                game.isGX2 = true;
+            }
+            else
+            {
+                game.id = System.IO.Path.GetFileNameWithoutExtension(currentwud);
+                if (game.id.Length != 6)
+                {
                     game.id = id + "01";
+                }
+                else
+                {
+                    if (game.id.Substring(0, 4) != id)
+                    {
+                        game.id = id + "01";
+                    }
                 }
             }
 
@@ -513,7 +543,7 @@ exsub:      obox.Dispose();
             SetReadOnly(gtkey, false);
             SetReadOnly(gname, false);
             button7.Enabled = true;
-            button8.Enabled = true;
+            button8.Enabled = !isGX2;
 
             string cvnam = "covers";
             if (!System.IO.Directory.Exists(cvnam)) System.IO.Directory.CreateDirectory(cvnam);
@@ -1984,6 +2014,16 @@ exsub:      System.IO.Directory.Delete("uwiz_newverfiles", true);
                     wudlist.Items.Add(System.IO.Path.GetFileNameWithoutExtension(files[c]));
                 }
             }
+
+            GetGX2Folders(folder);
+        }
+
+        private void GetGX2Folders(string dir)
+        {
+            var folders = Directory.GetDirectories(dir).Where(x => Regex.Match(x, @"\[([^)]*)\]").Success);
+            wudlist_fullpaths.AddRange(folders);
+            wudlist.Items.AddRange(folders.Select(x => x.Replace(Path.GetDirectoryName(x) + Path.DirectorySeparatorChar, "")).ToArray());
+
         }
 
         void refwudfolders() {
@@ -2561,5 +2601,6 @@ listiscorrupt:  msgbox("This title key list is corrupt.");
         public string key;
         public string desc;
         public regcode reg;
+        public bool isGX2;
     }
 }
