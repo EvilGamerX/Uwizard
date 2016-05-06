@@ -1,6 +1,12 @@
-Uwizard: All-In-One Wii U PC Program
+#Uwizard: All-In-One Wii U PC Program
 
-Features:
+This program does NOT play Wii U game backups! It currently can only extract the files and download covers.
+
+Along with Uwizard, the website http://wiiubrew.net is where you can find lots of useful Wii U related information.
+
+##Current Version: 1.1.3
+
+##Features:
 - Easily manage your Wii U games from a list!
 - SHA1 key verification!
 - Hide keys in inactive text boxes!
@@ -16,15 +22,24 @@ Features:
 
 You must obtain copyrighted Nintendo property to use with Uwizard by yourself. Such property includes but is not limited to Wii U games and Wii U encryption keys.
 
-This program does NOT play Wii U game backups! It currently can only extract the files and download covers.
+## Contributing
 
-Current Version: 1.1.3
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for the process for submitting pull requests to us.
 
-Credits:
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
+
+##Credits
 - Mr. Mysterio - Programmer of Uwizard
 - Crediar - Programmer of DiscU and CDecrypt
 - MasterF0x - Distributor of BFSTM Decoder
 - GameTDB - Game Covers
 - VinsCool, capito27, Phanteon, send0r - Translation
+- EvilGamerX - Added GX2 Format Support
 
-Along with Uwizard, the website http://wiiubrew.net is also newly released. You can find lots of useful Wii U related information there. You can even play PONG, the first Wii U homebrew game!
+See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the GPLv3 License - see the [LICENSE.md](LICENSE.md) file for details
