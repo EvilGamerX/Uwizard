@@ -153,6 +153,8 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Server\ISQLiteDatabase.cs" />
+    <Compile Include="Server\SQLiteDatabase.cs" />
+    <Compile Include="Setup.cs" />
     <Compile Include="ViewModel\GameManagementViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\TabViewModel.cs" />
